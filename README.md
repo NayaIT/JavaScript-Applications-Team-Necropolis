@@ -1,1 +1,1 @@
-# JavaScript-Applications-Team-Necropolis-
+# JavaScript-Applications-Team-Necropolis
