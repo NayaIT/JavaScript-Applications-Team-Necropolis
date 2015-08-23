@@ -9,4 +9,7 @@
   	-vasilevhr - Христо Василев
   	-eugenius - Евгений Иванов
   	-Alexio86 - Александър Павлов
+  	
+##Project Description:
+https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki
 
