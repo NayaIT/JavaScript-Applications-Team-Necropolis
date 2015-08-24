@@ -13,3 +13,6 @@
 ##Project Description:
 https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki
 
+##Tasks ToDo:
+https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki/Tasks
+
