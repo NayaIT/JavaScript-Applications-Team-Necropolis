@@ -1,55 +1,20 @@
 import 'jquery';
 import config from 'scripts/config.js';
+import gameModel from 'scripts/gameModel.js';
 
 var tetris = {
 
-    // Pre-load elements of the grid
-    init: function () {
-        var i, j, k;
-        tetris.cells = [];
-        for (i = -3; i < 18; ++i) { /////////////////////////////////
-            tetris.cells[i] = [];
-            for (j = 1; j < 11; ++j) {
-                k = String.fromCharCode(i + 97);
-                if (i >= 0) {
-                    tetris.cells[i][j] = $(['#', k, j].join(''));
-                } else {
-                    tetris.cells[i][j] = $('<a />');
-                }
-
-            }
-        }
-        tetris.bound = $.browser == 'msie' ? '#tetris' : window;
-    },
-
     // Initialize to start the game
-    start: function () {
-        // Stats
-        tetris.level = 0;
-        tetris.lines = 0;
-        tetris.score = 0;
-
-        // Array which contains data of the grid
-        tetris.grid = [
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
+    start: function (game) {
         $('#grid td').css('backgroundColor', config.colors[0]);
         //    $('#start').unbind(tetris.start).val('pause').click(tetris.pause); /////////////////////
         //        $('#stop').set('disabled', false);
+        tetris.bound = $.browser == 'msie' ? '#tetris' : window;
         $(tetris.bound).keypress(tetris.key);
-        tetris.next = tetris.newShape();
-        tetris.shift();
+        tetris.game = game;
+        game.start(tetris.gameOver);
         tetris.duration = 600;
-        tetris.refresh();
-        tetris.timer = window.setInterval(tetris.moveDown, tetris.duration);
+        tetris.timer = window.setInterval(game.moveDown, tetris.duration);
     },
 
     // Define the action to be fired depending on key entry
@@ -57,239 +22,52 @@ var tetris = {
         switch (e.charCode || e.keyCode) {
         case 74:
         case 106:
-            tetris.moveLeft();
+            tetris.game.moveLeft();
             break; // J
         case 76:
         case 108:
-            tetris.moveRight();
+            tetris.game.moveRight();
             break; // L
         case 75:
         case 107:
-            tetris.moveDown();
+            tetris.game.moveDown();
             break; // K
         case 73:
         case 105:
-            tetris.rotate();
+            tetris.game.rotate();
             break; // I
         }
         return false;
     },
 
-    // Generate an random shape
-    newShape: function () {
-        var r = 1 + Math.random() * 7;
-        return parseInt(r > 7 ? 7 : r, 10);
-    },
-
-    // Define then draw the next shape
-    setNext: function () {
-        var i, j, s, c, d, n = config.colors[0];
-        tetris.next = tetris.newShape();
-        s = config.shapes[tetris.next][0];
-        c = config.colors[tetris.next];
-        for (i = 0; i < 4; ++i) {
-            for (j = 0; j < 4; ++j) {
-                d = s[i][j] ? c : n;
-                $(['#x', j, i].join('')).css('backgroundColor', d);
-            }
-        }
-    },
-
-    // The next shape becomes the current one; reset coordinates
-    shift: function () {
-        tetris.cur = tetris.next;
-        tetris.x = tetris.x0 = 4;
-        tetris.y = config.startPosition[tetris.cur];
-        tetris.y0 = tetris.y - 2;
-        tetris.r = tetris.r0 = 0;
-        tetris.curShape = config.shapes[tetris.cur];
-        if (tetris.canGo(0, tetris.x, tetris.y)) {
-            tetris.setNext();
-            return true;
-        }
-        return false;
-    },
-
-    // Pause the game
-    pause: function () {
-        $(tetris.bound).unkeypress(tetris.key);
-        window.clearInterval(tetris.timer);
-        tetris.timer = null;
-        $('#start').unclick(tetris.pause).val('resume').click(tetris.resume);
-    },
-
-    // Resume the game
-    resume: function () {
-        $(tetris.bound).keypress(tetris.key);
-        tetris.timer = window.setInterval(tetris.moveDown, tetris.duration);
-        $('#start').unclick(tetris.resume).val('pause').click(tetris.pause);
-    },
-
+    // // Pause the game
+    // pause: function () {
+    //     $(gameObject.bound).unkeypress(gameObject.key);
+    //     window.clearInterval(gameObject.timer);
+    //     gameObject.timer = null;
+    //     $('#start').unclick(gameObject.pause).val('resume').click(gameObject.resume);
+    // },
+    //
+    // // Resume the game
+    // resume: function () {
+    //     $(gameObject.bound).keypress(gameObject.key);
+    //     gameObject.timer = window.setInterval(gameObject.moveDown, gameObject.duration);
+    //     $('#start').unclick(gameObject.resume).val('pause').click(gameObject.pause);
+    // },
     // Stop the game
+
     gameOver: function () {
-        var i, j;
         // Manage buttons
-        if (tetris.timer) {
-            $(tetris.bound).unkeypress(tetris.key);
-            window.clearInterval(tetris.timer);
-            tetris.timer = null;
-            $('#start').unclick(tetris.pause).val('start').click(tetris.start);
-        } else {
-            $('#start').unclick(tetris.resume).val('start').click(tetris.start);
-        }
-        $('#stop').set('disabled', true);
-        // Draw everything in white
-        for (i = 0; i < 18; ++i) {
-            for (j = 1; j < 11; ++j) {
-                if (tetris.grid[i][j]) {
-                    tetris.cells[i][j].css('backgroundColor', '#cccccc');
-                }
-            }
-        }
-        tetris.draw(tetris.r0, tetris.x0, tetris.y0, '#cccccc');
-    },
-
-    // Check overlays
-    canGo: function (r, x, y) {
-        var i, j;
-        for (i = 0; i < 4; ++i) {
-            for (j = 0; j < 4; ++j) {
-                if (tetris.curShape[r][j][i] && tetris.grid[y + j] &&
-                    tetris.grid[y + j][x + i]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    },
-
-    // Move the current shape to the left
-    moveLeft: function () {
-        if (tetris.canGo(tetris.r, tetris.x - 1, tetris.y)) {
-            --tetris.x;
-            tetris.refresh();
-        }
-    },
-
-    // Move the current shape to the right
-    moveRight: function () {
-        if (tetris.canGo(tetris.r, tetris.x + 1, tetris.y)) {
-            ++tetris.x;
-            tetris.refresh();
-        }
-    },
-
-    // Rotate the current shape
-    rotate: function () {
-        var r = tetris.r == tetris.curShape.length - 1 ? 0 : tetris.r + 1;
-        if (tetris.canGo(r, tetris.x, tetris.y)) {
-            tetris.r0 = tetris.r;
-            tetris.r = r;
-            tetris.refresh();
-        }
-    },
-
-    // Move down the current shape
-    moveDown: function () {
-        if (tetris.canGo(tetris.r, tetris.x, tetris.y + 1)) {
-            ++tetris.y;
-            tetris.refresh();
-        } else {
-            tetris.touchDown();
-        }
-    },
-
-    // The current shape touches down
-    touchDown: function () {
-        var i, j, k, r, f;
-        // mark the grid
-        for (i = 0; i < 4; ++i) {
-            for (j = 0; j < 4; ++j) {
-                if (tetris.curShape[tetris.r][j][i] &&
-                    tetris.grid[tetris.y + j]) {
-                    tetris.grid[tetris.y + j][tetris.x + i] = tetris.cur;
-                }
-            }
-        }
-        // search complete lines
-        f = 0;
-        for (i = 17, k = 17; i > -1 && f < 4; --i, --k) {
-            if (tetris.grid[i].join('').indexOf('0') == -1) {
-                // Complete lines become white
-                for (j = 1; j < 11; ++j) {
-                    tetris.cells[k][j].css('backgroundColor', '#cccccc');
-                }
-                ++f;
-                for (j = i; j > 0; --j) {
-                    tetris.grid[j] = tetris.grid[j - 1].concat();
-                }
-                ++i;
-            }
-        }
-        // animate
-        if (f) {
-            window.clearInterval(tetris.timer);
-            tetris.timer = window.setTimeout(function () {
-                tetris.after(f);
-            }, 100);
-        }
-        // try to continue
-        if (tetris.shift()) {
-            tetris.refresh();
-        } else {
-            tetris.gameOver();
-        }
-    },
-
-    // Finish the touchdown process
-    after: function (f) {
-        var i, j, l = (tetris.level < 20 ? tetris.level : 20) * 25;
-        // stats
-        tetris.lines += f;
-        if (tetris.lines % 10 === 0) {
-            tetris.level = tetris.lines / 10;
-        }
-        window.clearTimeout(tetris.timer);
-        tetris.timer = window.setInterval(tetris.moveDown, tetris.duration - l);
-        tetris.score += (tetris.level + 1) * config.points[f];
-        // redraw the grid
-        for (i = 0; i < 18; ++i) {
-            for (j = 1; j < 11; ++j) {
-                tetris.cells[i][j].css('backgroundColor',
-                    config.colors[tetris.grid[i][j]]);
-            }
-        }
-        tetris.refresh();
-    },
-
-    // Draw the current shape
-    draw: function (r, x, y, c) {
-        var i, j;
-        for (i = 0; i < 4; ++i) {
-            for (j = 0; j < 4; ++j) {
-                if (tetris.curShape[r][j][i]) {
-                    tetris.cells[y + j][x + i].css('backgroundColor', c);
-                }
-            }
-        }
-    },
-
-    // Refresh the grid
-    refresh: function () {
-        // remove from the old position
-        tetris.draw(tetris.r0, tetris.x0, tetris.y0, config.colors[0]);
-        // draw to the next one
-        tetris.draw(tetris.r, tetris.x, tetris.y, config.colors[tetris.cur]);
-        // change stats
-        $('#level').html(tetris.level + 1);
-        $('#lines').html(tetris.lines);
-        $('#score').html(tetris.score);
-        // reset coordinates
-        tetris.x0 = tetris.x;
-        tetris.y0 = tetris.y;
-        tetris.r0 = tetris.r;
+        console.log('aaa');
+        // if (gameObject.timer) {
+        //     $(gameObject.bound).unkeypress(gameObject.key);
+        //     window.clearInterval(gameObject.timer);
+        //     gameObject.timer = null;
+        //     $('#start').unclick(gameObject.pause).val('start').click(gameObject.start);
+        // } else {
+        //     $('#start').unclick(gameObject.resume).val('start').click(gameObject.start);
+        // }
     }
-
 };
 
 // Everything starts here
@@ -301,8 +79,11 @@ var tetris = {
 // });
 
 export function init() {
-    tetris.init();
     $('#grid table, #next table').css('backgroundColor', config.colors[0]);
-    $('#start').click(tetris.start);
-    $('#stop').click(tetris.gameOver);
+
+    gameModel.init();
+    tetris.start(gameModel);
+    console.log(gameModel);
+    //$('#start').click(tetris.start);
+    //$('#stop').click(tetris.gameOver);
 }
