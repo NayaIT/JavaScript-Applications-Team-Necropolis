@@ -5,22 +5,7 @@ var gameObject = {
 
     // Pre-load elements of the grid
     init: function () {
-        var i, j, k;
-        gameObject.cells = [];
-        for (i = -3; i < 18; ++i) {
-            gameObject.cells[i] = [];
-            for (j = 1; j < 11; ++j) {
-                k = String.fromCharCode(i + 97);
-                // todo: add cells dynamic
-                if (i >= 0) {
-                    gameObject.cells[i][j] = $(['#', k, j].join(''));
-                } else {
-                    gameObject.cells[i][j] = $('<a />');
-                }
-
-            }
-        }
-        gameObject.bound = window;
+        view.init();
     },
 
     // Initialize to start the game
@@ -142,9 +127,7 @@ var gameObject = {
         for (i = 17, k = 17; i > -1 && f < 4; --i, --k) {
             if (gameObject.grid[i].join('').indexOf('0') == -1) {
                 // Complete lines become white
-                for (j = 1; j < 11; ++j) {
-                    gameObject.cells[k][j].css('backgroundColor', '#cccccc');
-                }
+                view.clearLine(k);
                 ++f;
                 for (j = i; j > 0; --j) {
                     gameObject.grid[j] = gameObject.grid[j - 1].concat();
@@ -152,12 +135,9 @@ var gameObject = {
                 ++i;
             }
         }
-        // animate
+
         if (f) {
-            window.clearInterval(gameObject.timer);
-            gameObject.timer = window.setTimeout(function () {
-                gameObject.after(f);
-            }, 100);
+            gameObject.after(f);
         }
         // try to continue
         if (gameObject.shift()) {
@@ -168,8 +148,8 @@ var gameObject = {
     },
 
     gameOver: function () {
-        view.reset(gameObject.grid, gameObject.cells);
-        gameObject.draw(gameObject.r0, gameObject.x0, gameObject.y0, '#cccccc');
+        view.reset(gameObject.grid);
+        view.draw(gameObject.curShape, gameObject.r0, gameObject.x0, gameObject.y0, '#cccccc');
         gameObject.gameOverCallback();
     },
 
@@ -181,37 +161,17 @@ var gameObject = {
         if (gameObject.lines % 10 === 0) {
             gameObject.level = gameObject.lines / 10;
         }
-        window.clearTimeout(gameObject.timer);
-        gameObject.timer = window.setInterval(gameObject.moveDown, gameObject.duration - l);
         gameObject.score += (gameObject.level + 1) * config.points[f];
-        // redraw the grid
-        for (i = 0; i < 18; ++i) {
-            for (j = 1; j < 11; ++j) {
-                gameObject.cells[i][j].css('backgroundColor',
-                    config.colors[gameObject.grid[i][j]]);
-            }
-        }
+        view.reDraw(gameObject.grid);
         gameObject.refresh();
-    },
-
-    // Draw the current shape
-    draw: function (r, x, y, c) {
-        var i, j;
-        for (i = 0; i < 4; ++i) {
-            for (j = 0; j < 4; ++j) {
-                if (gameObject.curShape[r][j][i]) {
-                    gameObject.cells[y + j][x + i].css('backgroundColor', c);
-                }
-            }
-        }
     },
 
     // Refresh the grid
     refresh: function () {
         // remove from the old position
-        gameObject.draw(gameObject.r0, gameObject.x0, gameObject.y0, config.colors[0]);
+        view.draw(gameObject.curShape, gameObject.r0, gameObject.x0, gameObject.y0, config.colors[0]);
         // draw to the next one
-        gameObject.draw(gameObject.r, gameObject.x, gameObject.y, config.colors[gameObject.cur]);
+        view.draw(gameObject.curShape, gameObject.r, gameObject.x, gameObject.y, config.colors[gameObject.cur]);
         // change stats
         $('#level').html(gameObject.level + 1);
         $('#lines').html(gameObject.lines);
@@ -221,7 +181,6 @@ var gameObject = {
         gameObject.y0 = gameObject.y;
         gameObject.r0 = gameObject.r;
     }
-
 };
 
 export default gameObject;

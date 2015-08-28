@@ -6,9 +6,6 @@ var tetris = {
 
     // Initialize to start the game
     start: function (game) {
-        $('#grid td').css('backgroundColor', config.colors[0]);
-        //    $('#start').unbind(tetris.start).val('pause').click(tetris.pause); /////////////////////
-        //        $('#stop').set('disabled', false);
         tetris.bound = $.browser == 'msie' ? '#tetris' : window;
         $(tetris.bound).keypress(tetris.key);
         tetris.game = game;
@@ -40,50 +37,26 @@ var tetris = {
         return false;
     },
 
-    // // Pause the game
-    // pause: function () {
-    //     $(gameObject.bound).unkeypress(gameObject.key);
-    //     window.clearInterval(gameObject.timer);
-    //     gameObject.timer = null;
-    //     $('#start').unclick(gameObject.pause).val('resume').click(gameObject.resume);
-    // },
-    //
-    // // Resume the game
-    // resume: function () {
-    //     $(gameObject.bound).keypress(gameObject.key);
-    //     gameObject.timer = window.setInterval(gameObject.moveDown, gameObject.duration);
-    //     $('#start').unclick(gameObject.resume).val('pause').click(gameObject.pause);
-    // },
-    // Stop the game
-
     gameOver: function () {
-        // Manage buttons
-        console.log('aaa');
-        // if (gameObject.timer) {
-        //     $(gameObject.bound).unkeypress(gameObject.key);
-        //     window.clearInterval(gameObject.timer);
-        //     gameObject.timer = null;
-        //     $('#start').unclick(gameObject.pause).val('start').click(gameObject.start);
-        // } else {
-        //     $('#start').unclick(gameObject.resume).val('start').click(gameObject.start);
-        // }
+        if (tetris.timer) {
+            window.clearInterval(tetris.timer);
+            tetris.timer = null;
+        }
     }
 };
-
-// Everything starts here
-//$(window).load(function () {
-//     tetris.init();
-//     $('#grid table, #next table').css('backgroundColor', config.colors[0]);
-//     $('#start').click(tetris.start);
-//     $('#stop').click(tetris.gameOver);
-// });
 
 export function init() {
     $('#grid table, #next table').css('backgroundColor', config.colors[0]);
 
-    gameModel.init();
-    tetris.start(gameModel);
-    console.log(gameModel);
-    //$('#start').click(tetris.start);
-    //$('#stop').click(tetris.gameOver);
+    $('#start').click(function () {
+        $('#start').attr('disabled', 'disabled');
+        $('#stop').removeAttr('disabled');
+        gameModel.init();
+        tetris.start(gameModel);
+    });
+    $('#stop').click(function () {
+        $('#stop').attr('disabled', 'disabled');
+        $('#start').removeAttr('disabled');
+        tetris.gameOver();
+    });
 }
