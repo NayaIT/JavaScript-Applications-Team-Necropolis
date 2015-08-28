@@ -1,4 +1,4 @@
-import config from 'scripts/config.js';
+import config from '../scripts/config.js';
 
 var view = {
 

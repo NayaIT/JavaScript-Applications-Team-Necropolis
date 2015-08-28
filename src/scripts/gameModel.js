@@ -1,5 +1,5 @@
-import config from 'scripts/config.js';
-import view from 'scripts/view.js';
+import config from '../scripts/config.js';
+import view from '../scripts/view.js';
 
 var gameObject = {
 
