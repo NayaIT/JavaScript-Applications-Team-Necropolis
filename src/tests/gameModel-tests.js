@@ -90,7 +90,7 @@ describe('Game model tests', function () {
             var shapeNumber = gameModel.newShape();
             expect(shapeNumber).to.be.a('number');
         });
-        
+
         it('should return integer number', function () {
             var shapeNumber = gameModel.newShape();
             expect(Number(shapeNumber) === shapeNumber && shapeNumber % 1 === 0).to.be.true;
