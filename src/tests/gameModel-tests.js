@@ -1,27 +1,30 @@
 /*globals describe, it, require, before, beforeEach, global, $*/
 var expect = require('chai').expect;
+var jsdom = require('jsdom');
+var jq = require('jquery');
 import gameModel from '../scripts/gameModel.js';
 import view  from '../scripts/view.js';
+import config from '../scripts/config.js';
 
 describe('Game model tests', function () {
 
-    // before(function (done) {
-    //     jsdom.env({
-    //         html: '',
-    //         done: function (errors, window) {
-    //             global.window = window;
-    //             global.document = window.document;
-    //             global.$ = jq(window);
-    //             Object.keys(window)
-    //                 .filter(function (prop) {
-    //                     return prop.toLowerCase().indexOf('html') >= 0;
-    //                 }).forEach(function (prop) {
-    //                     global[prop] = window[prop];
-    //                 });
-    //             done();
-    //         }
-    //     });
-    // });
+    before(function (done) {
+        jsdom.env({
+            html: '',
+            done: function (errors, window) {
+                global.window = window;
+                global.document = window.document;
+                global.$ = jq(window);
+                Object.keys(window)
+                    .filter(function (prop) {
+                        return prop.toLowerCase().indexOf('html') >= 0;
+                    }).forEach(function (prop) {
+                        global[prop] = window[prop];
+                    });
+                done();
+            }
+        });
+    });
 
     beforeEach(function () {
 
