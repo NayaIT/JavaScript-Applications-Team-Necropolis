@@ -13,7 +13,7 @@
 - __Alexio86__ - Александър Павлов
   	
 ##Project Description:
-https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki
+https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki/Project-Description
 
 ##Tasks ToDo:
 https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki/Tasks
