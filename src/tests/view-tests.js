@@ -191,5 +191,29 @@ describe('View tests', function () {
             expect(cellsWithSecondColor).to.be.eql(cellsWithSecondColorAfterRedraw);
             done();
         })
+
+        it('clearLine() should set background color on grid line to rgb(204, 204, 204)', function () {
+            // Arrange
+            view.cells = [];
+            for (var i = 0; i < 18; i += 1) {
+                view.cells[i] = [];
+                for (var j = 1; j < 11; j += 1) {
+                    view.cells[i][j] = $('<a />').css('backgroundColor', 'rgb(234, 234, 234)');
+                }
+            }
+            
+            // Act
+            view.clearLine(0);
+
+            var isClear = true;
+            for (var j = 1, len = view.cells[0].length; j < len - 1; j += 1) {
+                if (view.cells[0][j].css('backgroundColor') !== 'rgb(204, 204, 204)') {
+                    isClear = false;
+                }
+            }
+            
+            // Assert              
+            expect(isClear).to.be.ok;
+        })
     })
 });
