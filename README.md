@@ -9,30 +9,41 @@
 Good luck!
 
 ##Project Architecture
+- Developed in JavaScript
+- Completely OOP Model-View-Controller design
+- Game model is implemented in file gameModel.js
+- UI implementaion is in file view.js
+- Game control is implemented in file tetris.js
+- Entry point of the program is function Tetris.init()
+- All objects are loaded dinamically using System.js
+- All game configuration is implemented in file config.js
+
+##Project Design
 - UI of the game is based on HTML tags and CSS styles
 - JQuery is used for DOM manipulation
-- JS OOP Model-View-Controller design
--- All UI implementaion is in file view.js
--- Game model is implemented in file gameModel.js
--- Game control is implemented in file tetris.js
-- All objects in the design and loaded dynamically using System.js
-- Results storage in acheved with localStorage
-- Complete code was tested with mocha and chai
+- Main game field is based on HTML table, and only CSS styles are changed dinamically
+- All control and statistic fields are separate divs
+- Game is scalable, used bootstrap
+
+##Storage, game score and sharing results
+- All score and storage logic is implemented in score.js
+- When game is over, result is store as localStorage in the browser
 - Results can be shared using Google Plus, Facebook and Tweeter JS APIs
 
+##Tests
+Tests are performed with Mocha Unit Testing Framework and Chai assertion framework. Unit tests run with Node.js " spec " reporter. To be run on your machine you need to have installed " iojs ". Just open console in folder tests and run command " npm test ".
+- gameModel-tests.js
+The first series of tests verify gameModel.js module contains all the functions you that he needed.
+The second series of tests verify function " newShape() " from same module does the function returns the correct data. Numbers beteween 1 and 7.
+- view-tests.js
+The first series of tests verify view.js module contains all the functions you that he needed. The second series of tests verify functions " reset(), draw(), reDraw(), clearLine() " from same module.
+
 ##Team members
-
-- __ageorgiev__ - Атанас Георгиев
-- __TodorDimitrov__ - Тодор Димитров
-- __snukal__ - Свилен Укалски
-- __Nayata__ - Ния Керанова
-- __vasilevhr__ - Христо Василев
-- __eugenius__ - Евгений Иванов
-- __Alexio86__ - Александър Павлов
+- __ageorgiev__ - Atanas Georgiev - Base game + Use jQuery, Implement OOP design
+- __TodorDimitrov__ - Todor Dimitrov - Unit Tests
+- __Nayata__ - Niya Keranova - localStorage
+- __vasilevhr__ - Hristo Vasilev - Third Party APIs
+- __Alexio86__ - Alexander Pavlov - Twitter Bootstrap
   	
-##Project Description:
-https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki/Project-Description
-
-##Tasks ToDo:
-https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/wiki/Tasks
-
+##Project Link:
+https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis
