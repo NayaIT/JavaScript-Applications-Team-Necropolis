@@ -57,6 +57,7 @@ describe('View tests', function () {
     });
 
     describe('View function ', function () {
+
         it('reset() shuold reset view.cells background color to rgb(204, 204, 204)', function () {
             // Arrange
             var grid = [];
@@ -83,8 +84,9 @@ describe('View tests', function () {
             // Assert
             expect(counter).to.be.eql(180);
         })
-        
-        it('draw() should draw correct current shape', function () {
+
+        it('draw() should draw correct current shape', function (done) {
+            this.timeout(3000);
             // Arrange
             var i, j, currentShape = [
                 [
@@ -136,6 +138,58 @@ describe('View tests', function () {
             
             // Assert
             expect(counter).to.be.eql(currentShapeNotEmptyCells);
+            done();
+        })
+
+        it('reDraw () must keep the same color after it is called', function (done) {
+            this.timeout(3000);
+            
+            // Arrange
+            view.cells = [];
+            for (var i = 0; i < 18; i += 1) {
+                view.cells[i] = [];
+                for (var j = 1; j < 11; j += 1) {
+                    view.cells[i][j] = $('<a />').css('backgroundColor', 'rgb(234, 234, 234)');
+                }
+            }
+
+            var grid = [];
+            var cellsWithFirstColor = 0;
+            var cellsWithSecondColor = 0;
+            for (var i = 0; i < 18; i += 1) {
+                grid[i] = [];
+                for (var j = 1; j < 11; j += 1) {
+                    if (j % 2) {
+                        grid[i][j] = 1;
+                        cellsWithFirstColor += 1;
+                    } else {
+                        grid[i][j] = 0;
+                        cellsWithSecondColor += 1;
+                    }
+                }
+            }
+            
+            // Act
+            view.reDraw(grid);
+
+            var cellsWithFirstColorAfterRedraw = 0;
+            var cellsWithSecondColorAfterRedraw = 0;
+            for (var i = 0; i < 18; i += 1) {
+                for (var j = 1; j < 11; j += 1) {
+                    if (view.cells[i][j].css('backgroundColor') === 'rgb(234, 234, 234)') {
+                        cellsWithFirstColorAfterRedraw += 1;
+                    }
+
+                    if (view.cells[i][j].css('backgroundColor') === 'rgb(255, 102, 0)') {
+                        cellsWithSecondColorAfterRedraw += 1;
+                    }
+                }
+            }
+ 
+            // Assert           
+            expect(cellsWithFirstColor).to.be.eql(cellsWithFirstColorAfterRedraw);
+            expect(cellsWithSecondColor).to.be.eql(cellsWithSecondColorAfterRedraw);
+            done();
         })
     })
 });
