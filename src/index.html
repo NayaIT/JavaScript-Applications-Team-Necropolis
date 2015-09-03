@@ -287,13 +287,21 @@
             <div>Rotate: I</div>
             <div>Down: K</div>
         </div>
-
+        
+        <div class="social-sharing">
+            <span class='st_facebook_large' displayText='Facebook' title="Click to share in Facebook"></span>
+            <span class='st_twitter_large' displayText='Tweet' title="Click to share in Twitter"></span>
+            <span class='st_googleplus_large' displayText='Google +' title="Click to share in Google+"></span>
+        </div>
     </div>
 
     <div id="overlay"></div>
+    
 
     <script src="node_modules/systemjs/dist/system.js"></script>
     <script src="scripts/systemjs.config.js"></script>
+    <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+    <script type="text/javascript">stLight.options({publisher: "849961b2-f156-4201-844a-47e71359af7e", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 
     <script>
         System.import('scripts/tetris.js').then(function(module) {
