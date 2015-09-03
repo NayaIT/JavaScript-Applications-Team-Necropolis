@@ -99,9 +99,9 @@ describe('Game model tests', function () {
             expect(Number(shapeNumber) === shapeNumber && shapeNumber % 1 === 0).to.be.true;
         });
 
-        it('should return number <= 7', function () {
+        it('should return number between 1 and 7', function () {
             var shapeNumber = gameModel.newShape();
-            expect(shapeNumber <= 7).to.be.true;
+            expect(shapeNumber <= 7 && shapeNumber > 0).to.be.true;
         })
     })
 });
