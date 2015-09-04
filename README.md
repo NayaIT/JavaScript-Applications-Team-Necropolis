@@ -5,7 +5,7 @@
 <h2 align="center">Classic Tetris Game</h2>
 
 ##Game Description
-"Classic Tetris Game" is a standard tetris game, geveloped in Javascript. In order to start new game, you have to press "New game" button, and then play with "JKLI" keys. Each completed row give points to the player. The speed is increased on certain amount of points, and the level increases as well. The more rows you complete, the more points you get.
+"Classic Tetris Game" is a standard tetris game, developed in Javascript. In order to start new game, you have to press "Start" button, and then play with "J, K, L, I" keys. Each completed row give points to the player. The speed is increased on certain amount of points, and the level increases as well. The more rows you complete, the more points you get.
 Good luck!
 
 ##Project Architecture
@@ -46,4 +46,4 @@ The first series of tests verify view.js module contains all the functions you t
 - __Alexio86__ - Alexander Pavlov - Twitter Bootstrap
   	
 ##Project Link:
-https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis
+https://github.com/NayaIT/JavaScript-Applications-Team-Necropolis/tree/master/src
